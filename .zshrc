@@ -4,7 +4,7 @@ alias vi="nvim"
 alias vimdiff='nvim -d'
 export EDITOR=nvim
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$PATH:$HOME/.gem/ruby/2.6.0/bin:/opt/mysql-shell-8.0.16/bin
 
 # Path to your oh-my-zsh installation.
   export ZSH="/home/ockonor/.oh-my-zsh"
@@ -73,7 +73,7 @@ ZSH_THEME="agnoster"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git tmux tmuxinator)
+plugins=(git tmux tmuxinator symfony2)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -102,3 +102,5 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
