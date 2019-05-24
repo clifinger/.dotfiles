@@ -1,17 +1,10 @@
-" If you prefer the Omni-Completion tip window to close when a selection is
-" made, these lines close it on movement in insert mode or when leaving
-" insert mode
-autocmd CursorMovedI * if pumvisible() == 0|silent! pclose|endif
-autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
 "*****************************************************************************
 "" Vim-PLug core
 "*****************************************************************************
 if has('vim_starting')
   set nocompatible               " Be iMproved
 endif
-
 let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
-
 let g:vim_bootstrap_langs = "javascript,php,python,ruby"
 let g:vim_bootstrap_editor = "nvim"				" nvim or vim
 
@@ -20,26 +13,23 @@ if !filereadable(vimplug_exists)
   echo ""
   silent !\curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   let g:not_finish_vimplug = "yes"
-
   autocmd VimEnter * PlugInstall
 endif
 
-" Required:
+"888888888888888888 Required 8888888888888888888888
 call plug#begin(expand('~/.config/nvim/plugged'))
-
-"*****************************************************************************
-"" Plug install packages
-"*****************************************************************************
+"88888888888888888888888888888888888888888888888888
+"                                                 8
+"             Plug install packages               8
+"                                                 8
+"88888888888888888888888888888888888888888888888888
 Plug 'scrooloose/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
-Plug 'dracula/vim'
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
-Plug 'vim-scripts/grep.vim'
 Plug 'vim-scripts/CSApprox'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'Raimondi/delimitMate'
@@ -48,124 +38,77 @@ Plug 'scrooloose/syntastic'
 Plug 'Yggdroot/indentLine'
 Plug 'avelino/vim-bootstrap-updater'
 Plug 'burntSushi/ripgrep'
-"Plug 'ncm2/ncm2'
-"Plug 'roxma/nvim-yarp'
-"Plug 'ncm2/ncm2-bufword'
-"Plug 'ncm2/ncm2-path'
-"Plug 'ncm2/ncm2-ultisnips'
 Plug 'moll/vim-bbye'
-Plug 'phpactor/phpactor', {'for': 'php', 'do': 'composer install'}
-"Plug 'phpactor/ncm2-phpactor'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'phpactor/phpactor', {
+            \'for': 'php',
+            \ 'do': 'composer install'
+            \}
+Plug 'junegunn/fzf', {
+            \'dir': '~/.fzf',
+            \'do': './install --all'
+            \}
 Plug 'junegunn/fzf.vim'
 Plug 'stephpy/vim-php-cs-fixer'
 Plug 'Rican7/php-doc-modded'
+
 let g:make = 'gmake'
 if exists('make')
         let g:make = 'make'
 endif
 Plug 'Shougo/vimproc.vim', {'do': g:make}
-
-"" Vim-Session
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
-
-if v:version >= 703
-  Plug 'Shougo/vimshell.vim'
-endif
-
-if v:version >= 704
-  "" Snippets
-  Plug 'SirVer/ultisnips'
-endif
+Plug 'Shougo/vimshell.vim'
+Plug 'SirVer/ultisnips'
 Plug 'mattn/emmet-vim'
 Plug 'honza/vim-snippets'
-
-"" Color
-Plug 'tomasr/molokai'
 Plug 'neomake/neomake'
-
-"*****************************************************************************
-"" Custom bundles
-"*****************************************************************************
-
 Plug 'nelsyeung/twig.vim'
 Plug 'amiorin/vim-project'
 Plug 'mhinz/vim-startify'
-Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+Plug 'lvht/phpcd.vim', {
+            \'for': 'php',
+            \'do': 'composer install'
+            \}
+Plug 'Shougo/deoplete.nvim', {
+            \'do': ':UpdateRemotePlugins'
+            \}
 let g:deoplete#enable_at_startup = 1
+"888888888888888888 Required 8888888888888888888888
 call plug#end()
+"88888888888888888888888888888888888888888888888888
 
-
-
-" enable ncm2 for all buffers
-"autocmd BufEnter * call ncm2#enable_for_buffer()
-"set completeopt=noinsert,menuone,noselect
-"inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
-"filetype plugin indent on
-
-
-"*****************************************************************************
-"" Basic Setup
-"*****************************************************************************"
-"" Encoding
+"888888888888888888  Common  8888888888888888888888
 set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8
 set bomb
 set binary
-
-
-"" Fix backspace indent
 set backspace=indent,eol,start
-
-"" Tabs. May be overriten by autocmd rules
 set tabstop=4
 set softtabstop=0
 set shiftwidth=4
 set expandtab
-
-"" Map leader to ,
 let mapleader=','
-
 nnoremap <Leader>bq :Bdelete<CR>
-"" Enable hidden buffers
 set hidden
-
-"" Searching
 set hlsearch
 set incsearch
 set ignorecase
 set smartcase
-
-"" Directories for swp files
 set nobackup
 set noswapfile
-
 set fileformats=unix,dos,mac
 set showcmd
-set shell=/bin/sh
-
-" session management
+set shell=/bin/zsh
 let g:session_directory = "~/.config/nvim/session"
 let g:session_autoload = "no"
 let g:session_autosave = "no"
 let g:session_command_aliases = 1
-
-"*****************************************************************************
-"" Visual Settings
-"*****************************************************************************
+"888888888888888888  Visual  8888888888888888888888
 syntax on
 set ruler
 set number
-
 let no_buffers_menu=1
 set mousemodel=popup
 set background=dark
@@ -173,47 +116,21 @@ colorscheme palenight
 set t_Co=256
 set guioptions=egmrti
 set gfn=Monospace\ 10
-
-if has("gui_running")
-  if has("gui_mac") || has("gui_macvim")
-    set guifont=Menlo:h12
-    set transparency=7
-  endif
-else
-  let g:CSApprox_loaded = 1
-
-  " IndentLine
-  let g:indentLine_enabled = 1
-  let g:indentLine_concealcursor = 0
-  let g:indentLine_char = '┆'
-  let g:indentLine_faster = 1
-
-endif
-
-
-
-"" Disable the blinking cursor.
+let g:CSApprox_loaded = 1
+let g:indentLine_enabled = 1
+let g:indentLine_concealcursor = 0
+let g:indentLine_char = '┆'
+let g:indentLine_faster = 1
 set gcr=a:blinkon0
 set scrolloff=3
-
-"" Status bar
 set laststatus=2
-
-"" Use modeline overrides
 set modeline
 set modelines=10
-
 set title
 set titleold="Terminal"
 set titlestring=%F
-
 set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
-
-if exists("*fugitive#statusline")
-  set statusline+=%{fugitive#statusline()}
-endif
-
-" vim-airline
+set statusline+=%{fugitive#statusline()}
 let g:airline_theme = 'powerlineish'
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#branch#enabled = 1
@@ -242,29 +159,15 @@ let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycach
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeShowBookmarks=1
 let g:nerdtree_tabs_focus_on_files=1
-let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let g:NERDTreeWinSize = 50
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 noremap <F3> :NERDTreeToggle<CR>
-
-" grep.vim
-nnoremap <silent> <leader>f :rgrep<cr>
-let grep_default_options = '-ir'
-let grep_skip_files = '*.log *.db'
-let grep_skip_dirs = '.git node_modules'
-
 " vimshell.vim
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 let g:vimshell_prompt =  '$ '
-
 " terminal emulation
-if g:vim_bootstrap_editor == 'nvim'
-  nnoremap <silent> <leader>sh :terminal<CR>
-else
-  nnoremap <silent> <leader>sh :VimShellCreate<CR>
-endif
-
+nnoremap <silent> <leader>sh :terminal<CR>
 "*****************************************************************************
 "" Functions
 "*****************************************************************************
