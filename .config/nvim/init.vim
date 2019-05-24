@@ -35,6 +35,7 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'dracula/vim'
+Plug 'drewtempelmeyer/palenight.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
@@ -46,17 +47,19 @@ Plug 'majutsushi/tagbar'
 Plug 'scrooloose/syntastic'
 Plug 'Yggdroot/indentLine'
 Plug 'avelino/vim-bootstrap-updater'
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-path'
-Plug 'ncm2/ncm2-ultisnips'
+Plug 'burntSushi/ripgrep'
+"Plug 'ncm2/ncm2'
+"Plug 'roxma/nvim-yarp'
+"Plug 'ncm2/ncm2-bufword'
+"Plug 'ncm2/ncm2-path'
+"Plug 'ncm2/ncm2-ultisnips'
 Plug 'moll/vim-bbye'
-Plug 'phpactor/ncm2-phpactor'
+Plug 'phpactor/phpactor', {'for': 'php', 'do': 'composer install'}
+"Plug 'phpactor/ncm2-phpactor'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'StanAngeloff/php.vim'
 Plug 'stephpy/vim-php-cs-fixer'
+Plug 'Rican7/php-doc-modded'
 let g:make = 'gmake'
 if exists('make')
         let g:make = 'make'
@@ -86,20 +89,27 @@ Plug 'neomake/neomake'
 "" Custom bundles
 "*****************************************************************************
 
-Plug 'phpactor/phpactor', {'for': 'php', 'do': 'composer install'}
 Plug 'nelsyeung/twig.vim'
 Plug 'amiorin/vim-project'
 Plug 'mhinz/vim-startify'
-
+Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+let g:deoplete#enable_at_startup = 1
 call plug#end()
 
 
 
 " enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=noinsert,menuone,noselect
-inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
-filetype plugin indent on
+"autocmd BufEnter * call ncm2#enable_for_buffer()
+"set completeopt=noinsert,menuone,noselect
+"inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
+"filetype plugin indent on
 
 
 "*****************************************************************************
@@ -157,11 +167,9 @@ set ruler
 set number
 
 let no_buffers_menu=1
-if !exists('g:not_finish_vimplug')
-  colorscheme molokai
-endif
-
 set mousemodel=popup
+set background=dark
+colorscheme palenight
 set t_Co=256
 set guioptions=egmrti
 set gfn=Monospace\ 10
@@ -241,10 +249,10 @@ nnoremap <silent> <F2> :NERDTreeFind<CR>
 noremap <F3> :NERDTreeToggle<CR>
 
 " grep.vim
-nnoremap <silent> <leader>f :Rgrep<CR>
-let Grep_Default_Options = '-IR'
-let Grep_Skip_Files = '*.log *.db'
-let Grep_Skip_Dirs = '.git node_modules'
+nnoremap <silent> <leader>f :rgrep<cr>
+let grep_default_options = '-ir'
+let grep_skip_files = '*.log *.db'
+let grep_skip_dirs = '.git node_modules'
 
 " vimshell.vim
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
@@ -477,9 +485,7 @@ set laststatus=2
 "" set shortcut for open Nerdtree
 map <C-n> :NERDTreeToggle<CR>
 
-"" Turn-on dracula color scheme
 syntax on
-color dracula
 
 "" ctrlP key for ctrlP plugin
 let g:ctrlp_map = '<c-p>'
@@ -490,6 +496,8 @@ let g:UltiSnipsListSnippets = '<f5>'
 let NERDTreeShowHidden=1
 "" Phpactor
 " Include use statement
+"
+"let g:ncm2_phpactor_timeout = 3000
 nmap <Leader>u :call phpactor#UseAdd()<CR>
 
 " Invoke the context menu
@@ -527,9 +535,6 @@ set shortmess+=c
 
 " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
 inoremap <c-c> <ESC>
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-
-nnoremap <silent><leader>pcf :call PhpCsFixerFixFile()<CR>
 set rtp+=~/.config/nvim/plugged/vim-project
 let g:startify_session_dir = '~/.config/nvim/session'
 let g:startify_session_persistence = 1
@@ -551,10 +556,30 @@ Callback 'juloul', 'Symfony'
 
 function! Symfony(...)
     let g:ultisnips_php_scalar_types = 1
-
+    nnoremap <silent><leader>pcf :call PhpCsFixerFixFile()<CR>
     " standard phpcs config
     let g:neomake_php_phpcs_args_standard = 'PSR2'
     let g:php_cs_fixer_rules = "@PSR2"
 
     autocmd FileType php nnoremap <leader>y :silent :call PhpCsFixerFixFile()<CR>
 endfunction
+
+inoremap <C-D> <ESC>:call PhpDocSingle()<CR>
+nnoremap <C-D> :call PhpDocSingle()<CR>
+vnoremap <C-D> :call PhpDocRange()<CR>
+au BufWritePost *.php silent! !eval '[ -f ".git/hooks/ctags" ] && .git/hooks/ctags' &
+
+let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
+let g:deoplete#ignore_sources.php = ['omni']
+
+nnoremap <leader>a :Rg<space>
+nnoremap <leader>A :exec "Rg ".expand("<cword>")<cr>
+
+autocmd VimEnter * command! -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
+set shell=/bin/zsh
